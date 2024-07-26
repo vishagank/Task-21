@@ -1,0 +1,63 @@
+from selenium import webdriver
+from selenium.webdriver.chrome.service import Service
+from selenium.webdriver.chrome.options import Options
+from selenium.webdriver.common.by import By
+from selenium.webdriver.common.keys import Keys
+import time
+
+# Specify the path to your ChromeDriver executable
+chrome_driver_path = "C:/Users/visha/OneDrive/Desktop/chromedriver-win64/chromedriver.exe"  
+
+# Setup Chrome options
+chrome_options = Options()
+chrome_options.add_argument("--start-maximized")
+
+# Setup WebDriver with the specified path
+service = Service(chrome_driver_path)
+driver = webdriver.Chrome(service=service, options=chrome_options)
+
+try:
+    # Open SauceDemo website
+    driver.get("https://www.saucedemo.com/")
+    
+    # Print cookies before login
+    cookies_before_login = driver.get_cookies()
+    print("Cookies before login:", cookies_before_login)
+    
+    # Login to the website
+    username_field = driver.find_element(By.ID, "user-name")
+    password_field = driver.find_element(By.ID, "password")
+    login_button = driver.find_element(By.ID, "login-button")
+    
+    # Enter credentials
+    username_field.send_keys("standard_user")
+    password_field.send_keys("secret_sauce")
+    login_button.click()
+    
+    # Wait for login to complete
+    time.sleep(5)
+    
+    # Print cookies after login
+    cookies_after_login = driver.get_cookies()
+    print("Cookies after login:", cookies_after_login)
+    
+    # Logout
+    menu_button = driver.find_element(By.ID, "react-burger-menu-btn")
+    logout_button = driver.find_element(By.ID, "logout_sidebar_link")
+    
+    menu_button.click()
+    time.sleep(1)
+    logout_button.click()
+    
+    # Wait for logout to complete
+    time.sleep(5)
+    
+    # Verify that cookies are cleared
+    cookies_after_logout = driver.get_cookies()
+    print("Cookies after logout:", cookies_after_logout)
+    
+finally:
+    # Wait for a few seconds to observe the results
+    time.sleep(5)
+    # Quit the driver
+    driver.quit()
